@@ -4,6 +4,11 @@ from feature_extraction import *
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn import metrics
+import matplotlib.pyplot as plt
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.metrics import plot_roc_curve
+from sklearn.metrics import precision_recall_fscore_support as score
+from sklearn.metrics import classification_report
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=True, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -27,38 +32,22 @@ if __name__ == '__main__':
     X = calculate_bag_of_words(X, ngram = 2)
     # X = calculate_tf_idf(X, ngram = 2)
     print(X)
-    print(y)
     ## split the data
-
-    from sklearn.metrics import precision_recall_fscore_support as score
-    from sklearn.metrics import classification_report
 
     ## train a model
     target_names = ['truthful', 'deceptive']
     # splitting X and y into training and testing sets
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.295, random_state=109)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=2)
     # training the model on training set
     gnb = GaussianNB()
     gnb.fit(X_train, y_train)
     # making predictions on the testing set
     y_pred = gnb.predict(X_test)
-
-
-    p, r, f, s = score(y_test, y_pred,average=None)
-    print(classification_report(y_test, y_pred, target_names=target_names))
-
-
-
+    
     # comparing actual response values (y_test) with predicted response values (y_pred)
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
-
-    from sklearn.metrics import plot_confusion_matrix
-    from sklearn.metrics import plot_roc_curve
-
-     #8.Visualize confusion matrix
+    # Visualize confusion matrix
     plot_confusion_matrix(gnb, X_test, y_test)
-
-    #9. Visualize ROC curve
+    # Visualize ROC curve
     plot_roc_curve(gnb, X_test, y_test)
     plt.show()
