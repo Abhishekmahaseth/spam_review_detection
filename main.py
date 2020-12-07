@@ -27,15 +27,14 @@ if __name__ == '__main__':
     X = calculate_bag_of_words(X, ngram = 2)
     # X = calculate_tf_idf(X, ngram = 2)
     print(X)
-
+    print(y)
     ## split the data
 
     from sklearn.metrics import precision_recall_fscore_support as score
-    from sklearn.metrics import f1_score
+    from sklearn.metrics import classification_report
 
     ## train a model
-
-
+    target_names = ['truthful', 'deceptive']
     # splitting X and y into training and testing sets
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.295, random_state=109)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=2)
@@ -45,11 +44,21 @@ if __name__ == '__main__':
     # making predictions on the testing set
     y_pred = gnb.predict(X_test)
 
+
     p, r, f, s = score(y_test, y_pred,average=None)
-    print(p, r, f, s )
-    print('precision: {}'.format(p))
-    f1_none = f1_score(y_test, y_pred, average=None)
-    # print(f1_none)
+    print(classification_report(y_test, y_pred, target_names=target_names))
+
+
 
     # comparing actual response values (y_test) with predicted response values (y_pred)
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
+
+    from sklearn.metrics import plot_confusion_matrix
+    from sklearn.metrics import plot_roc_curve
+
+     #8.Visualize confusion matrix
+    plot_confusion_matrix(gnb, X_test, y_test)
+
+    #9. Visualize ROC curve
+    plot_roc_curve(gnb, X_test, y_test)
+    plt.show()
