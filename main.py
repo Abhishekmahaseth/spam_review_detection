@@ -43,7 +43,8 @@ if __name__ == '__main__':
     gnb.fit(X_train, y_train)
     # making predictions on the testing set
     y_pred = gnb.predict(X_test)
-    
+    # this prints Precision, Recall, Accuracy, F1-score
+    print(classification_report(y_test, y_pred, target_names=target_names))
     # comparing actual response values (y_test) with predicted response values (y_pred)
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
     # Visualize confusion matrix
