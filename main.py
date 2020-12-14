@@ -9,9 +9,9 @@ from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import plot_roc_curve
 from sklearn.metrics import precision_recall_fscore_support as score
 from sklearn.metrics import classification_report
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('stopwords')
 
 def training_GaussianModel(X,y):
     # get features
@@ -24,9 +24,8 @@ def training_GaussianModel(X,y):
     # train a model
     target_names = ['truthful', 'deceptive']
     # splitting X and y into training and testing sets
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.295, random_state=109)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5)
-
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.10, random_state=19)
     from sklearn.preprocessing import StandardScaler
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
@@ -50,17 +49,17 @@ def training_GaussianModel(X,y):
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
 
     # Visualize confusion matrix
-    # plot_confusion_matrix(gnb, X_test, y_test)
+    plot_confusion_matrix(gnb, X_test, y_test)
 
     # Visualize ROC curve
-    # plot_roc_curve(gnb, X_test, y_test)
+    plot_roc_curve(gnb, X_test, y_test)
 
     # Plotting the blobs for 2 catagories
-    # from sklearn.datasets import make_blobs
-    # X, y = make_blobs(100, 2, centers=2, random_state=5, cluster_std=1.5)
-    # plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu');
-
+    from sklearn.datasets import make_blobs
+    X, y = make_blobs(n_samples=100, centers=3, n_features=2)
+    plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu');
     # plt.show()
+
 
     return X,y
 
