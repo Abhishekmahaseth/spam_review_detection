@@ -43,7 +43,7 @@ def svm(X_train, X_test, y_train, y_test):
 
         # Create and store optimal paraments in a json file ("svm_params.json")
         model.fit(X_train, y_train.ravel())
-        print(f"Testing size: {s} per class\nBest paraments: {model.best_params_}")
+        print(f"Best paraments: {model.best_params_}")
 
         with open("svm_params.json", "w") as file:
             json.dump(model.best_params_, file)
@@ -52,6 +52,6 @@ def svm(X_train, X_test, y_train, y_test):
     pred = model.predict(X_test)
 
     target_names = ['truthful', 'deceptive']
-    print(classification_report(y_test, y_pred, target_names=target_names))
+    print(classification_report(y_test, pred, target_names=target_names))
 
     return model
