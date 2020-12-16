@@ -13,19 +13,37 @@ from sklearn.metrics import classification_report
 # nltk.download('averaged_perceptron_tagger')
 # nltk.download('stopwords')
 
-def training_GaussianModel(X,y):
+# this get featuresd for frequency of words
+def calculate_freq():
     # get features
-    # ngram allows it to take 2 words at a time
-    X = calculate_bag_of_words(X, ngram = 2)
-    # X = calculate_tf_idf(X)
-    # X = calculate_pos_freq(X)
-    print(X)
+    # for calculate_pos_freq
+    args.dataset = "deceptive-opinion.csv"
+    data = pd.read_csv(args.dataset)
+    X = data.iloc[:,5 if args.dataset == "preprocessed.csv" else 4]
+    y = data.iloc[:, 0]
+    if args.classifier.lower() == 'svm':
+        pass
+    X = calculate_pos_freq(X)
+    return X
 
+def calculate_idf(X):
+    # get features
+    X = calculate_tf_idf(X)
+    return X
+
+# get fetures for bag of words
+def bag_of_words(X):
+    # ngram allows it to take 2 words at a time
+    X = calculate_bag_of_words(X, ngram = 3)
+    return X
+
+#  runs the gaussian model
+def gaussian(X,y):
     # train a model
     target_names = ['truthful', 'deceptive']
     # splitting X and y into training and testing sets
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.10, random_state=19)
+
     from sklearn.preprocessing import StandardScaler
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
@@ -58,11 +76,16 @@ def training_GaussianModel(X,y):
     from sklearn.datasets import make_blobs
     X, y = make_blobs(n_samples=100, centers=3, n_features=2)
     plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu');
-    # plt.show()
-
+    plt.show()
 
     return X,y
-
+    
+# take user input for the type of feature to run
+def user_input(val):
+    print("Please choose the feature you want to run by entering a number :\n")
+    print("1: Bag of Words 2: calculate_tf_idf 3: calculate_pos_freq ")
+    val = int(input())
+    return val
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=True, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -71,16 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--classifier', action='store', dest='classifier', default='svm', required=False,
                         help='Classification algorithm to be used Ex. svm, naive')
     args = parser.parse_args()
-
     data = pd.read_csv(args.dataset)
-
-    # for calculate_pos_freq
-    # args.dataset = "deceptive-opinion.csv"
-    # data = pd.read_csv(args.dataset)
-    # X = data.iloc[:,5 if args.dataset == "preprocessed.csv" else 4]
-    # y = data.iloc[:, 0]
-    # if args.classifier.lower() == 'svm':
-    #     pass
 
     print(data.iloc[0]['preprocessed_text'])  # data.iloc[0][5] or data.iloc[0, 5]
     print(data.iloc[0]['deceptive'])  # data.iloc[0][0] or data.iloc[0, 0]
@@ -88,4 +102,15 @@ if __name__ == '__main__':
         X = data.iloc[:, 5 if args.dataset == 'preprocessed.csv' else 4]
     y = data.iloc[:, 0]
 
-    training_GaussianModel(X,y)
+    input = user_input(input)
+    # print("input:",input)
+    if input == 1:
+        bag = bag_of_words(X)
+        gaussian(bag,y)
+    elif input == 2:
+        tf =  calculate_idf(X)
+        gaussian(tf,y)
+    elif input == 3:
+        freq = calculate_freq()
+        print(freq)
+        gaussian(freq,y)
