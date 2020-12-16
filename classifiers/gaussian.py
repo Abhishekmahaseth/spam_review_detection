@@ -1,4 +1,5 @@
-from sklearn.naive_bayes import GaussianNB
+import numpy as np
+import pandas as pd
 from sklearn.naive_bayes import GaussianNB
 from sklearn import metrics
 import matplotlib.pyplot as plt
@@ -7,6 +8,8 @@ from sklearn.metrics import plot_roc_curve
 from sklearn.metrics import precision_recall_fscore_support as score
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+
 
 def gaussian(X_train, X_test, y_train, y_test):
     # train a model
@@ -18,19 +21,23 @@ def gaussian(X_train, X_test, y_train, y_test):
 
     # training the model on training set
     gnb = GaussianNB()
-    gnb.fit(X_train, y_train)
-    # making predictions on the testing set
-    y_pred = gnb.predict(X_test)
 
-    # params_NB = {'var_smoothing': np.logspace(0,-9, num=100)}
-    # gs_NB = GridSearchCV(estimator=gnb,
-    #                  param_grid=params_NB,
-    #                  cv=cv_method,   # use any cross validation technique
-    #                  verbose=1,
-    #                  scoring='accuracy')
-    # gs_NB.fit(x_train, y_train)
-    #
-    # gs_NB.best_params_
+    # making predictions on the testing set
+    # y_pred = gnb.predict(X_test)
+
+    params_NB = {'var_smoothing': np.logspace(0,-9, num=100)}
+
+    gs_NB = GridSearchCV(estimator=gnb,
+                     param_grid=params_NB,
+                     cv=15,   # use any cross validation technique
+                     verbose=2,
+                     scoring='accuracy')
+
+    gs_NB.fit(X_train, y_train)
+
+    gs_NB.best_params_
+
+    y_pred = gs_NB.predict(X_test)
 
     # this provides Precision, Recall, Accuracy, F1-score
     p, r, f, s = score(y_test, y_pred,average=None)
@@ -45,9 +52,16 @@ def gaussian(X_train, X_test, y_train, y_test):
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
 
     # Visualize confusion matrix
-    plot_confusion_matrix(gnb, X_test, y_test)
+    # plot_confusion_matrix(gs_NB, X_test, y_test)
 
     # Visualize ROC curve
-    plot_roc_curve(gnb, X_test, y_test)
+    # plot_roc_curve(gs_NB, X_test, y_test)
 
-    return gnb
+    results_NB = pd.DataFrame(gs_NB.cv_results_['params'])
+    results_NB['test_score'] = gs_NB.cv_results_['mean_test_score']
+    plt.plot(results_NB['var_smoothing'], results_NB['test_score'], marker = '.')
+    plt.xlabel('Var. Smoothing')
+    plt.ylabel("Mean CV Score")
+    plt.title("NB Performance Comparison")
+    plt.show()
+    return gs_NB

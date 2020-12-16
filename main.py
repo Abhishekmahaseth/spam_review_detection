@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_blobs
+import matplotlib.pyplot as plt
 
 from lib.feature_extraction import calculate_bag_of_words, calculate_tf_idf, calculate_pos_freq
 from lib.predict_new_review import predict
@@ -77,7 +78,7 @@ if __name__ == '__main__':
             random_state = 42
         else:
             random_state = None
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=20, random_state=random_state)
     else:
         raise Exception("Split size out of range. Pick a value in [ 0..1 ]")
 
