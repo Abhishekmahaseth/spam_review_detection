@@ -25,6 +25,7 @@ def gaussian(X_train, X_test, y_train, y_test):
     # making predictions on the testing set
     # y_pred = gnb.predict(X_test)
 
+    # params_NB = {'var_smoothing': np.logspace(0,-9, num=100)}
     params_NB = {'var_smoothing': np.logspace(0,-9, num=100)}
 
     gs_NB = GridSearchCV(estimator=gnb,
@@ -50,18 +51,20 @@ def gaussian(X_train, X_test, y_train, y_test):
 
     # comparing actual response values (y_test) with predicted response values (y_pred)
     print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_pred)*100)
+    print('Test Accuracy : %.3f'%gs_NB.score(X_test, y_test)) ## Score method also evaluates accuracy for classification models.
+    print('Training Accuracy : %.3f'%gs_NB.score(X_train, y_train))
 
     # Visualize confusion matrix
-    # plot_confusion_matrix(gs_NB, X_test, y_test)
+    plot_confusion_matrix(gs_NB, X_test, y_test)
 
     # Visualize ROC curve
-    # plot_roc_curve(gs_NB, X_test, y_test)
+    plot_roc_curve(gs_NB, X_test, y_test)
 
-    results_NB = pd.DataFrame(gs_NB.cv_results_['params'])
-    results_NB['test_score'] = gs_NB.cv_results_['mean_test_score']
-    plt.plot(results_NB['var_smoothing'], results_NB['test_score'], marker = '.')
-    plt.xlabel('Var. Smoothing')
-    plt.ylabel("Mean CV Score")
-    plt.title("NB Performance Comparison")
-    plt.show()
+    # results_NB = pd.DataFrame(gs_NB.cv_results_['params'])
+    # results_NB['test_score'] = gs_NB.cv_results_['mean_test_score']
+    # plt.plot(results_NB['var_smoothing'], results_NB['test_score'], marker = '.')
+    # plt.xlabel('Var. Smoothing')
+    # plt.ylabel("Mean CV Score")
+    # plt.title("NB Performance Comparison")
+    # plt.show()
     return gs_NB
