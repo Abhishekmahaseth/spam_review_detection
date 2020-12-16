@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_blobs
 
 from lib.feature_extraction import calculate_bag_of_words, calculate_tf_idf, calculate_pos_freq
-frim lib.predict_new_review import predict
+from lib.predict_new_review import predict
 
 from classifiers.svm import svm
 from classifiers.gaussian import gaussian
@@ -46,8 +46,7 @@ if __name__ == '__main__':
                              '\'random-forest\'  |  \'mlp\'  |  \'ada-boost\' ]')
     arguments = parser.parse_args()
 
-
-    if arguments.feature is 'pos-tag-freq' and arguments.dataset is 'preprocessed.csv':
+    if arguments.feature == 'pos-tag-freq' and arguments.dataset == 'preprocessed.csv':
         raise Exception("Only deceptive-opinion.csv supported for feature: pos-tag-freq")
 
     data = pd.read_csv(arguments.dataset)
@@ -62,16 +61,15 @@ if __name__ == '__main__':
             X = calculate_bag_of_words(data=X, ngram=2)
         elif feature == 'tf-idf':
             X = calculate_tf_idf(data=X)
-        elif feature is 'pos-tag-freq':
+        elif feature == 'pos-tag-freq':
             X = calculate_pos_freq(data=X)
     else:
         raise Exception("Given feature not supported. Choose from: [ 'bag-of-words'  |  'tf-idf'  |  'pos-tag-freq' ]")
 
-
     ##### TEST TRAIN SPLIT
     classifier = arguments.classifier.lower()
     test_size = float(arguments.test_train_split)
-    if test_size >= 0 and test_size <= 1:
+    if 0 <= test_size <= 1:
         # optimal random_state computed through trails
         if classifier == 'gaussian':
             random_state = 19
@@ -83,11 +81,10 @@ if __name__ == '__main__':
     else:
         raise Exception("Split size out of range. Pick a value in [ 0..1 ]")
 
-
     ##### Model Training
     if classifier in ('svm', 'gaussian', 'random-forest', 'mlp'):
         print("TRAINING THE MODEL.....\n\n")
-        #do appropriate model training
+        # do appropriate model training
         if classifier == 'svm':
             ## train SVM model
             model = svm(X_train, X_test, y_train, y_test)
@@ -96,15 +93,15 @@ if __name__ == '__main__':
 
             # Plotting the blobs for 2 catagories
             X, y = make_blobs(n_samples=100, centers=3, n_features=2)
-            plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu');
+            plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu')
             plt.show()
     else:
-        raise Exception("Given classfier not supported. Choose from: [ 'svm'  |  'gaussian'  |  'random-forest'  |  'mlp'  | 'ada-boost' ]")
-
+        raise Exception(
+            "Given classfier not supported. Choose from: [ 'svm'  |  'gaussian'  |  'random-forest'  |  'mlp'  | 'ada-boost' ]")
 
     print("MODEL TRAINED!!!\n\n\n")
     print("NOW WE CAN CLASSIFY YOUR REVIEWS")
-    while(True):
+    while (True):
         print("Enter your review: ")
         review = input()
 
