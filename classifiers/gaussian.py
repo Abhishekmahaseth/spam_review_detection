@@ -21,6 +21,17 @@ def gaussian(X_train, X_test, y_train, y_test):
     gnb.fit(X_train, y_train)
     # making predictions on the testing set
     y_pred = gnb.predict(X_test)
+
+    # params_NB = {'var_smoothing': np.logspace(0,-9, num=100)}
+    # gs_NB = GridSearchCV(estimator=gnb,
+    #                  param_grid=params_NB,
+    #                  cv=cv_method,   # use any cross validation technique
+    #                  verbose=1,
+    #                  scoring='accuracy')
+    # gs_NB.fit(x_train, y_train)
+    #
+    # gs_NB.best_params_
+
     # this provides Precision, Recall, Accuracy, F1-score
     p, r, f, s = score(y_test, y_pred,average=None)
     print("Precision:", p)
