@@ -20,7 +20,7 @@ def calculate_bag_of_words(data, max_features=1000, ngram=1):
 
     vectorizer = CountVectorizer(max_features=max_features, ngram_range=(1, ngram))
     vectors = vectorizer.fit_transform(data).toarray()
-    return vectors
+    return vectorizer, vectors
 
 # Extract TF-IDF features for all documents
 def calculate_tf_idf(data):
@@ -30,7 +30,7 @@ def calculate_tf_idf(data):
     dense = vectors.todense()
     denselist = dense.tolist()
     tfidf = pd.DataFrame(denselist, columns=feature_names)
-    return tfidf
+    return vectorizer, tfidf
 
 def calculate_pos_freq(data):
     '''
