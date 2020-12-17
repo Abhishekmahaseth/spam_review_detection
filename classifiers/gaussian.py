@@ -34,10 +34,13 @@ def gaussian(X_train, X_test, y_train, y_test):
 
     gs_NB.fit(X_train, y_train)
 
-    gs_NB.best_params_
+
+    print("\n\n",gs_NB.best_params_)
+    print("\n")
+
+
 
     y_pred = gs_NB.predict(X_test)
-
     # this provides Precision, Recall, Accuracy, F1-score
     p, r, f, s = score(y_test, y_pred,average=None)
     print("Precision:", p)
