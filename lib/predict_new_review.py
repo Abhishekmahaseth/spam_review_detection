@@ -7,7 +7,7 @@ def predict(model, review, feature, vectorizer=None):
         vector = new_cv.fit_transform([review]).toarray()
     elif feature == 'tf-idf':
         vector = vectorizer.transform([review])
-        vector = vector.todense()
+        vector = vector.todense() # the review funtions
     elif feature == 'pos-tag-freq':
         vector = calculate_pos_freq(data=[review])
 
