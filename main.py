@@ -8,6 +8,9 @@ from lib.predict_new_review import predict
 
 from classifiers.svm import svm
 from classifiers.gaussian import gaussian
+from classifiers.mlp_classifier import MLPClassification
+from classifiers.random_forest_classifier import randomForest
+from classifiers.ada_boost_classifier import adaBoost
 import matplotlib.pyplot as plt
 
 # nltk.download('punkt')
@@ -86,11 +89,17 @@ if __name__ == '__main__':
             model = svm(X_train, X_test, y_train, y_test)
         elif classifier == 'gaussian':
             model = gaussian(X_train, X_test, y_train, y_test)
-
-            # Plotting the blobs for 2 catagories
-            X, y = make_blobs(n_samples=100, centers=3, n_features=2)
-            plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu')
-            plt.show()
+        elif classifier == 'mlp':
+            model = MLPClassification(X_train, X_test, y_train, y_test)
+        elif classifier == 'random-forest':
+            model = randomForest(X_train, X_test, y_train, y_test)
+        elif classifier == 'ada-boost':
+            model = adaBoost(X_train, X_test, y_train, y_test)
+            
+        # Plotting the blobs for 2 catagories
+        X, y = make_blobs(n_samples=100, centers=3, n_features=2)
+        plt.scatter(X[:, 0], X[:, 1], c=y, s=50, cmap='RdBu')
+        plt.show()
     else:
         raise Exception(
             "Given classfier not supported. Choose from: [ 'svm'  |  'gaussian'  |  'random-forest'  |  'mlp'  | 'ada-boost' ]")
