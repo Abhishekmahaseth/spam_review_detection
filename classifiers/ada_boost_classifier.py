@@ -79,3 +79,46 @@ def TunedAdaBoostClassification(X,y):
     plt.show()                                
     
     return ada_classification_report, ada_conf_mat
+
+def adaBoost(X_train,X_test, y_train,y_test):
+    
+    #1. Initialize a model to the Ada Boost Classifier from Sci-kit learn
+    clf = AdaBoostClassifier(random_state=0)
+    
+    
+    #2. Initialize hyperparameter grid GridSearchCV will search over
+    grid = {"n_estimators": [100, 200, 500, 1000],
+            }
+
+    #3. Setup GridSearchCV
+    ada_clf = GridSearchCV(estimator=clf,
+                            param_grid=grid,
+                            scoring= 'accuracy',
+                            n_jobs=-1, 
+                            cv=5,
+                            verbose=2) 
+
+    #4. Fit the GridSearchCV version of clf
+    ada_clf.fit(X_train, y_train);
+    
+    #5. Once the fit is complete take the best parameters for the different models tried
+    ada_clf.best_params_
+    
+    #6. Make predictions with the best hyperparameters
+    ada_y_preds = ada_clf.predict(X_test)
+    
+    #7. Classification report: Precision, Recall and F1 Score calculation
+    ada_classification_report = classification_report(y_test, ada_y_preds)
+    print(ada_classification_report)
+    
+    #8. Confusion matrix
+    #ada_conf_mat = confusion_matrix(y_test, ada_y_preds)
+    
+    #9.Visualize confusion matrix
+    plot_confusion_matrix(ada_clf, X_test, y_test)
+    
+    #10. Visualize ROC curve
+    plot_roc_curve(ada_clf, X_test, y_test)
+    plt.show()                                
+    
+    return ada_clf
