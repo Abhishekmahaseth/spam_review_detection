@@ -34,7 +34,7 @@ def gaussian(X_train, X_test, y_train, y_test):
 
     gs_NB.fit(X_train, y_train)
 
-    # prints the var smotthing value used 
+    # prints the var_smoothing value used 
     print("\n\n",gs_NB.best_params_)
     print("\n")
 
