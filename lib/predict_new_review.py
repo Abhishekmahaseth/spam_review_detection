@@ -1,15 +1,15 @@
-from .feature_extraction import calculate_bag_of_words, calculate_tf_idf, calculate_pos_freq
+from .feature_extraction import calculate_pos_freq
+from sklearn.feature_extraction.text import CountVectorizer
 
-def predict(model, review, feature):
+def predict(model, review, feature, vectorizer=None):
     if feature == 'bag-of-words':
-        X = calculate_bag_of_words(data=review, ngram=2)
+        new_cv = CountVectorizer(vocabulary=vectorizer.get_feature_names(), max_features=1000, ngram_range=(1, 2))
+        vector = new_cv.fit_transform([review]).toarray()
     elif feature == 'tf-idf':
-        X = calculate_tf_idf(data=review)
+        vector = vectorizer.fit_transform([review])
+        vector = vector.todense()
     elif feature == 'pos-tag-freq':
-        X = calculate_pos_freq(data=review)
+        vector = calculate_pos_freq(data=[review])
 
-    y_review = model.predict(X)
+    y_review = model.predict(vector)
     return y_review
-    #######
-    # TO DO: Check if y_review needs to converted to be in ['truthful', 'deceptive']
-    #######

@@ -1,8 +1,6 @@
 import numpy as np
-import pandas as pd
 from sklearn.naive_bayes import GaussianNB
 from sklearn import metrics
-import matplotlib.pyplot as plt
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import plot_roc_curve
 from sklearn.metrics import precision_recall_fscore_support as score

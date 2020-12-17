@@ -2,13 +2,13 @@ import argparse
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_blobs
-import matplotlib.pyplot as plt
 
 from lib.feature_extraction import calculate_bag_of_words, calculate_tf_idf, calculate_pos_freq
 from lib.predict_new_review import predict
 
 from classifiers.svm import svm
 from classifiers.gaussian import gaussian
+import matplotlib.pyplot as plt
 
 # nltk.download('punkt')
 # nltk.download('averaged_perceptron_tagger')
@@ -21,13 +21,6 @@ if __name__ == '__main__':
     feature: [ 'bag-of-words'  |  'tf-idf'  |  'pos-tag-freq' ]
     test-train-split: [ TEST_SIZE ]
     classifier: [ 'svm'  |  'gaussian'  |  'random-forest'  |  'mlp'  | 'ada-boost' ]
-
-    .
-    .
-    _hyper_params_
-    .
-    .
-
     '''
 
     parser = argparse.ArgumentParser(add_help=True, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -47,6 +40,8 @@ if __name__ == '__main__':
                              '\'random-forest\'  |  \'mlp\'  |  \'ada-boost\' ]')
     arguments = parser.parse_args()
 
+    # arguments.test_train_split = 0.4
+
     if arguments.feature == 'pos-tag-freq' and arguments.dataset == 'preprocessed.csv':
         raise Exception("Only deceptive-opinion.csv supported for feature: pos-tag-freq")
 
@@ -57,11 +52,11 @@ if __name__ == '__main__':
     ##### FEATURE EXTRACTION
     feature = arguments.feature.lower()
     if feature in ('bag-of-words', 'tf-idf', 'pos-tag-freq'):
-        print("EXTRACTING FEATURES.....\n\n")
+        print("EXTRACTING FEATURES.....\n")
         if feature == 'bag-of-words':
-            X = calculate_bag_of_words(data=X, ngram=2)
+            vectorizer, X = calculate_bag_of_words(data=X, ngram=3)
         elif feature == 'tf-idf':
-            X = calculate_tf_idf(data=X)
+            vectorizer, X = calculate_tf_idf(data=X)
         elif feature == 'pos-tag-freq':
             X = calculate_pos_freq(data=X)
     else:
@@ -84,7 +79,7 @@ if __name__ == '__main__':
 
     ##### Model Training
     if classifier in ('svm', 'gaussian', 'random-forest', 'mlp'):
-        print("TRAINING THE MODEL.....\n\n")
+        print("TRAINING THE MODEL.....\n")
         # do appropriate model training
         if classifier == 'svm':
             ## train SVM model
@@ -106,6 +101,6 @@ if __name__ == '__main__':
         print("Enter your review: ")
         review = input()
 
-        result = predict(model, review, feature)
+        result = predict(model, review, feature, vectorizer)
         print(result)
         print()
